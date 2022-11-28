@@ -1,0 +1,123 @@
+.cardAttr1 {
+    opacity: 60%;
+    width: 211.2px;
+    vertical-align: middle;
+    filter: blur(8px);
+    -webkit-box-reflect: below -2px linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 1));
+}
+
+.cardAttr2 {
+    opacity: 80%;
+    width: 230.4px;
+    vertical-align: middle;
+    filter: blur(4px);
+    -webkit-box-reflect: below -2px linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 1));
+}
+
+.cardAttr3 {
+    opacity: 100%;
+    width: 288px;
+    vertical-align: middle;
+    filter: drop-shadow(0px 0px 20px rgba(255, 255, 255, 0.5));
+    -webkit-box-reflect: below -1px linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 1));
+}
+
+.cardAttr3:active {
+    filter: drop-shadow(0px 0px 20px rgba(255, 255, 255, 0.5)) brightness(110%);
+}
+
+.collectedCard {
+    opacity: 100%;
+    width: 200px;
+    padding: 10px;
+    vertical-align: middle;
+    filter: drop-shadow(0px 0px 20px rgba(255, 255, 255, 0.5));
+}
+
+@keyframes elementHover {
+    from {
+        width: 60px;
+    }
+
+    to {
+        width: 80px;
+    }
+}
+
+@keyframes elementLeave {
+    from {
+        width: 80px;
+    }
+
+    to {
+        width: 60px;
+    }
+}
+
+@keyframes elementShine {
+    45% {
+        filter: drop-shadow(0px 0px 5px rgb(0, 0, 0, 1)) brightness(100%);
+    }
+
+    50% {
+        filter: drop-shadow(0px 0px 5px rgb(0, 0, 0, 1)) brightness(150%);
+    }
+
+    55% {
+        filter: drop-shadow(0px 0px 5px rgb(0, 0, 0, 1)) brightness(100%);
+    }
+}
+
+@keyframes loading {
+    10% {
+        filter: opacity(20%);
+    }
+
+    50% {
+        filter: opacity(50%);
+    }
+
+    90% {
+        filter: opacity(20%);
+    }
+}
+
+.elementButton {
+    margin: 5px;
+    width: 60px;
+    filter: drop-shadow(0px 0px 5px rgb(0, 0, 0, 1));
+    animation:
+        elementLeave 0.2s forwards,
+        elementShine 10s infinite;
+}
+
+.elementButton:hover {
+    animation-name: elementHover;
+    animation-duration: 0.2s;
+    position: relative;
+    width: 80px;
+}
+
+.elementButton:active {
+    filter: brightness(200%) drop-shadow(0px 0px 5px rgb(255, 255, 255));
+}
+
+.draw {
+    margin-top: 50px;
+    margin-bottom: 20px;
+    width: 100px;
+    filter: invert() drop-shadow(0px 0px 5px rgb(0, 0, 0));
+}
+
+.draw:disabled {
+    filter: opacity(30%);
+    animation: loading 2s infinite;
+}
+
+body {
+    background-image: url('version_background/3.2.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 1920px 1080px;
+    background-position: center;
+}
