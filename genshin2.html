@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>原神抽奖</title>
+    <style>
+        .cardAttr1 {
+            opacity: 60%;
+            width: 11%;
+            vertical-align: middle;
+        }
+
+        .cardAttr2 {
+            opacity: 80%;
+            width: 13%;
+            vertical-align: middle;
+        }
+
+        .cardAttr3 {
+            opacity: 100%;
+            width: 15%;
+            vertical-align: middle;
+        }
+
+        body {
+            background-image: url('version_background/3.2.png');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100%;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="text-align: center;">
+        <div>
+            <img src="paimon.png" id="card1" class="cardAttr1">
+            <img src="paimon.png" id="card2" class="cardAttr2">
+            <img src="paimon.png" id="card3" class="cardAttr3">
+            <img src="paimon.png" id="card4" class="cardAttr2">
+            <img src="paimon.png" id="card5" class="cardAttr1">
+        </div>
+        <div>
+            <button type="button" onclick="element = anemo; resetPic();">Anemo</button>
+            <button type="button" onclick="element = geo; resetPic();">Geo</button>
+            <button type="button" onclick="element = pyro; resetPic();">Pyro</button>
+            <button type="button" onclick="element = cryo; resetPic();">Cryo</button>
+            <button type="button" onclick="element = hydro; resetPic();">Hydro</button>
+            <button type="button" onclick="element = electro; resetPic();">Electro</button>
+            <button type="button" onclick="element = dendro; resetPic();">Dendro</button>
+        </div>
+        <div>
+            <button type="button" onclick="draw(); shuffleArray(cards);">DRAW</button>
+        </div>
+    </div>
+    <script>
+
+        //const cards = ["ayaka.png", "nilou.png", "keqing.png", "hutao.png", "yoimiya.png"];
+
+        //const cards = [];
+
+        // var min = 1, max = 9;
+        // var cards = Array.apply(null, { length: max + 1 - min }).map(function (_, idx) {
+        //     return idx + min;
+        // });
+
+        let countdown;
+
+        let element;
+
+        let anemo = "anemo/";
+        let geo = "geo/";
+        let pyro = "pyro/";
+        let cryo = "cryo/";
+        let hydro = "hydro/";
+        let electro = "electro/";
+        let dendro = "dendro/";
+
+        element = anemo;
+
+        let png = ".png";
+
+        // var min = 1, max = 9;
+        //     var cards = Array.apply(null, { length: max + 1 - min }).map(function (_, idx) {
+        //         return idx + min;
+        //     });
+
+        function resetPic() {
+            cards = [];
+            var min = 1;
+            switch (element) {
+                case anemo:
+                    var max = 9;
+                    break;
+                case pyro:
+                    var max = 10;
+                    break;
+                default:
+                    break;
+            }
+            var cards = Array.apply(null, { length: max + 1 - min }).map(function (_, idx) {
+                return idx + min;
+            });
+
+            index1 = 0;
+            index2 = 1;
+            index3 = 2;
+            index4 = 3;
+            index5 = 4;
+            document.getElementById("card1").src = element + cards[index1] + png;
+            document.getElementById("card2").src = element + cards[index2] + png;
+            document.getElementById("card3").src = element + cards[index3] + png;
+            document.getElementById("card4").src = element + cards[index4] + png;
+            document.getElementById("card5").src = element + cards[index5] + png;
+        }
+
+        resetPic();
+
+        // function indexMinus(){
+        //     index--;
+        // };
+
+        // function indexAdd(){
+        //     index++;
+        // };
+
+        function prevPic(index, card) {
+            if (index > 0) {
+                index = index - 1;
+                document.getElementById(card).src = element + cards[index] + png;
+            } else {
+                index = cards.length - 1;
+                document.getElementById(card).src = element + cards[index] + png;
+            }
+            return index;
+        };
+
+        function nextPic(index, card) {
+            if (index < cards.length - 1) {
+                index = index + 1;
+                document.getElementById(card).src = element + cards[index] + png;
+            } else {
+                index = 0;
+                document.getElementById(card).src = element + cards[index] + png;
+            }
+            return index;
+        };
+
+        function switchPic(direction) {
+            if (direction == 'prev') {
+                index1 = prevPic(index1, "card1");
+                index2 = prevPic(index2, "card2");
+                index3 = prevPic(index3, "card3");
+                index4 = prevPic(index4, "card4");
+                index5 = prevPic(index5, "card5");
+
+            } else if (direction == 'next') {
+                index1 = nextPic(index1, "card1");
+                index2 = nextPic(index2, "card2");
+                index3 = nextPic(index3, "card3");
+                index4 = nextPic(index4, "card4");
+                index5 = nextPic(index5, "card5");
+            };
+
+            if (countdown < 600) {
+                countdown = countdown * 1.2;
+                setTimeout(function () { switchPic('next'); }, countdown);
+            } else if (countdown >= 600) {
+                setTimeout(function () {
+                    index1 = nextPic(index1, "card1");
+                    index2 = nextPic(index2, "card2");
+                    index3 = nextPic(index3, "card3");
+                    index4 = nextPic(index4, "card4");
+                    index5 = nextPic(index5, "card5");
+                }, 1000);
+            };
+        };
+
+        function draw() {
+            countdown = 0.00000001;
+            setTimeout(function () { switchPic('next'); }, countdown);
+        }
+
+        function shuffleArray(array) {
+            for (var i = array.length - 1; i > 0; i--) {
+
+                // Generate random number
+                var j = Math.floor(Math.random() * (i + 1));
+
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+
+            return array;
+        }
+
+    </script>
+</body>
+
+</html>
