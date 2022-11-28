@@ -50,6 +50,8 @@ element = anemo;
 
 let png = ".png";
 
+//Default array
+
 var min = 1, max = 9;
 var cards = Array.apply(null, { length: max + 1 - min }).map(function (_, idx) {
     return idx + min;
@@ -76,8 +78,23 @@ function resetPic() {
         case anemo:
             var max = 9;
             break;
+        case geo:
+            var max = 7;
+            break;
         case pyro:
             var max = 10;
+            break;
+        case cryo:
+            var max = 11;
+            break;
+        case hydro:
+            var max = 9;
+            break;
+        case electro:
+            var max = 11;
+            break;
+        case dendro:
+            var max = 3;
             break;
         default:
             break;
@@ -92,11 +109,24 @@ function resetPic() {
     index4 = 3;
     index5 = 4;
 
-    document.getElementById("card1").src = element + cards[index1] + png;
-    document.getElementById("card2").src = element + cards[index2] + png;
-    document.getElementById("card3").src = element + cards[index3] + png;
-    document.getElementById("card4").src = element + cards[index4] + png;
-    document.getElementById("card5").src = element + cards[index5] + png;
+    document.getElementById("card1").src = element + cards[max - 2] + png;
+    document.getElementById("card2").src = element + cards[max - 1] + png;
+    document.getElementById("card3").src = element + cards[index1] + png;
+    document.getElementById("card4").src = element + cards[index2] + png;
+    document.getElementById("card5").src = element + cards[index3] + png;
+
+    if (max <= 5) {
+        document.getElementById("card1").style.display = "none";
+        document.getElementById("card2").style.display = "none";
+        document.getElementById("card4").style.display = "none";
+        document.getElementById("card5").style.display = "none";
+    }
+    else {
+        document.getElementById("card1").style.display = "inline";
+        document.getElementById("card2").style.display = "inline";
+        document.getElementById("card4").style.display = "inline";
+        document.getElementById("card5").style.display = "inline";
+    };
 
     defaultDisplay = setInterval(function () {
         index1 = nextPic(index1, "card1");
@@ -105,6 +135,8 @@ function resetPic() {
         index4 = nextPic(index4, "card4");
         index5 = nextPic(index5, "card5");
     }, 5000);
+
+    return cards;
 }
 
 resetPic();
@@ -187,22 +219,40 @@ function switchButton(boolean) {
 function draw() {
     clearInterval(defaultDisplay);
     document.getElementById("card3").disabled = true;
+    // for (let i = 0; i < 10; i++) {
     shuffleArray(cards);
-    shuffleArray(cards);
-    shuffleArray(cards);
-    countdown = Math.random() * 3; //0.1
+    // };
+    countdown = Math.random() / 10; //0.1
     setTimeout(function () { switchPic('next'); }, countdown);
 }
 
+// function shuffleArray(array) {
+//     for (var i = array.length - 1; i > 0; i--) {
+
+//         // Generate random number
+//         var j = Math.floor(Math.random() * (i + 1));
+
+//         var temp = array[i];
+//         array[i] = array[j];
+//         array[j] = temp;
+//     }
+
+//     return array;
+// }
+
 function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
+    let currentIndex = array.length, randomIndex;
 
-        // Generate random number
-        var j = Math.floor(Math.random() * (i + 1));
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
 
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
     }
 
     return array;
