@@ -19,12 +19,14 @@ function resize() {
     if (window.innerWidth < 1248) {
         document.getElementById("card1").style.display = "none";
         document.getElementById("card2").style.display = "none";
+        document.getElementById("card3").style.width = "200px";
         document.getElementById("card4").style.display = "none";
         document.getElementById("card5").style.display = "none";
     }
     else {
         document.getElementById("card1").style.display = "inline";
         document.getElementById("card2").style.display = "inline";
+        document.getElementById("card3").style.width = "288px";
         document.getElementById("card4").style.display = "inline";
         document.getElementById("card5").style.display = "inline";
     };
