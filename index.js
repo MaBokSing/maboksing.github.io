@@ -101,10 +101,12 @@ function resetPic() {
     }
 
     //preload cards
-    //<img src="https://perishablepress.com/image-03.png" width="1" height="1" alt="Image 03" />
-    for (let i = 1; i <= max; i++) {
-        document.getElementById("preloaded-images").innerHTML += '<img src="' + element + i + png + '">';
-    }
+    if (!document.getElementById(element.slice(0, -1) + "Preload")) {
+        document.getElementById("preloaded-images").innerHTML += '<div id=' + element.slice(0, -1) + "Preload" + '></div>';
+        for (let i = 1; i <= max; i++) {
+            document.getElementById(element.slice(0, -1) + "Preload").innerHTML += '<img src="' + element + i + png + '">';
+        };
+    };
 
     var cards = Array.apply(null, { length: max + 1 - min }).map(function (_, idx) {
         return idx + min;
