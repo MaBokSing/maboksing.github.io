@@ -99,6 +99,13 @@ function resetPic() {
         default:
             break;
     }
+
+    //preload cards
+    //<img src="https://perishablepress.com/image-03.png" width="1" height="1" alt="Image 03" />
+    for (let i = 1; i <= max; i++) {
+        document.getElementById("preloaded-images").innerHTML += '<img src="' + element + i + png + '">';
+    }
+
     var cards = Array.apply(null, { length: max + 1 - min }).map(function (_, idx) {
         return idx + min;
     });
