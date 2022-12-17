@@ -75,11 +75,13 @@ function createName() {
 
     function initGame() {
 
+        //Key Press
         new KeyPressListener("ArrowUp", "KeyW", () => handleArrowPress(0, -1));
         new KeyPressListener("ArrowDown", "KeyS", () => handleArrowPress(0, 1));
         new KeyPressListener("ArrowLeft", "KeyA", () => handleArrowPress(-1, 0));
         new KeyPressListener("ArrowRight", "KeyD", () => handleArrowPress(1, 0));
 
+        //Player Data
         const allPlayersRef = firebase.database().ref(`players`);
 
         allPlayersRef.on("value", (snapshot) => {
@@ -104,7 +106,7 @@ function createName() {
         })
 
         allPlayersRef.on("child_added", (snapshot) => {
-            //fires whenever a new node is added the three
+            //fires whenever a new node is added the tree
             const addedPlayer = snapshot.val();
             const characterElement = document.createElement("div");
             characterElement.classList.add("Character", "grid-call");
@@ -122,7 +124,7 @@ function createName() {
 
             playerElements[addedPlayer.id] = characterElement;
 
-            //Fill in some initial state
+            //Fill in Players initial state
             characterElement.querySelector(".Character_name").innerText = addedPlayer.name;
             characterElement.querySelector(".Character_body").style.backgroundColor = addedPlayer.color;
             characterElement.setAttribute("data-color", addedPlayer.color);
@@ -140,6 +142,7 @@ function createName() {
             gameContainer.removeChild(playerElements[removedKey]);
             delete playerElements[removedKey];
         })
+
     }
 
     firebase.auth().onAuthStateChanged((user) => {
@@ -151,17 +154,35 @@ function createName() {
 
             const name = createName();
 
-            playerRef.set({
-                id: playerId,
-                name,
-                direction: "right",
-                color: randomArray(playerColors),
-                x: 3,
-                y: 3,
-                coins: 0,
-            })
+            firebase.database().ref(`players/${playerId}`).once('value', function(ss) {
+                if( ss.val() === null ) {
+                    //console.log(playerId," does not exist");
+                    //If uid does not exists, then create a new entity
+                    playerRef.set({
+                        id: playerId,
+                        name,
+                        direction: "right",
+                        color: randomArray(playerColors),
+                        x: 3,
+                        y: 3,
+                        stage: "lobby",
+                        online: true
+                    })
+                }
+                else {
+                    //console.log(playerId," exist ", ss.val());
+                    //If uid exists, then update online status
+                    playerRef.update({
+                        online: true
+                    })
+                }
+            
+            });
 
-            playerRef.onDisconnect().remove();
+            //If player disconnects then update online status
+            playerRef.onDisconnect().update({
+                online: false
+            })
 
             initGame();
 

@@ -53,6 +53,7 @@
 
 .Character_body {
     overflow: hidden;
+    border-radius: 5px;
     height: 32px;
     width: 32px;
 }
@@ -105,14 +106,32 @@
     background-size: 1200% 1200%;
     -webkit-animation: rainbow 30s ease infinite;
     animation: rainbow 30s ease infinite;
-  }
-  @-webkit-keyframes rainbow {
-    0% { background-position: 0% 50% }
-    50% { background-position: 100% 50% }
-    100% { background-position: 0% 50% }
-  }
-  @keyframes rainbow {
-    0% { background-position: 0% 50% }
-    50% { background-position: 100% 50% }
-    100% { background-position: 0% 50% }
-  }
+}
+
+@-webkit-keyframes rainbow {
+    0% {
+        background-position: 0% 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    100% {
+        background-position: 0% 50%
+    }
+}
+
+@keyframes rainbow {
+    0% {
+        background-position: 0% 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    100% {
+        background-position: 0% 50%
+    }
+}
