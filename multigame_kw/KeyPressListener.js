@@ -1,21 +1,27 @@
 class KeyPressListener {
-    constructor(keyCode, callback) {
+    constructor(keyCode1, keyCode2, callback) {
         let moveInterval;
         let keySafe = true;
+
         this.keydownFunction = function (event) {
-            if (event.code === keyCode) {
+            if (event.code === keyCode1 || event.code === keyCode2) {
                 if (keySafe) {
                     keySafe = false;
                     callback();
                     moveInterval = setInterval(function () {
                         callback();
+                        //Loss focus on page
+                        if (!document.hasFocus()) {
+                            clearInterval(moveInterval);
+                            keySafe = true;
+                        }
                     }, 100);
                 }
             }
         };
 
         this.keyupFunction = function (event) {
-            if (event.code === keyCode) {
+            if (event.code === keyCode1 || event.code === keyCode2) {
                 clearInterval(moveInterval);
                 keySafe = true;
             }

@@ -54,7 +54,7 @@ function createName() {
 
     const gameContainer = document.querySelector(".game-container");
 
-    function handleArrowPress(xChange=0, yChange=0) {
+    function handleArrowPress(xChange = 0, yChange = 0) {
         const newX = players[playerId].x + xChange;
         const newY = players[playerId].y + yChange;
         //Collision
@@ -74,10 +74,10 @@ function createName() {
 
     function initGame() {
 
-        new KeyPressListener("ArrowUp", () => handleArrowPress(0, -1));
-        new KeyPressListener("ArrowDown", () => handleArrowPress(0, 1));
-        new KeyPressListener("ArrowLeft", () => handleArrowPress(-1, 0));
-        new KeyPressListener("ArrowRight", () => handleArrowPress(1, 0));
+        new KeyPressListener("ArrowUp", "KeyW", () => handleArrowPress(0, -1));
+        new KeyPressListener("ArrowDown", "KeyS", () => handleArrowPress(0, 1));
+        new KeyPressListener("ArrowLeft", "KeyA", () => handleArrowPress(-1, 0));
+        new KeyPressListener("ArrowRight", "KeyD", () => handleArrowPress(1, 0));
 
         const allPlayersRef = firebase.database().ref(`players`);
 
@@ -119,6 +119,7 @@ function createName() {
 
             //Fill in some initial state
             characterElement.querySelector(".Character_name").innerText = addedPlayer.name;
+            characterElement.querySelector(".Character_body").style.backgroundColor = addedPlayer.color;
             characterElement.setAttribute("data-color", addedPlayer.color);
             characterElement.setAttribute("data-direction", addedPlayer.direction);
             const left = 16 * addedPlayer.x + "px";
