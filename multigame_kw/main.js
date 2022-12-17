@@ -4,6 +4,10 @@ function randomArray(array) {
     return array[Math.floor(Math.random() * array.length)];
 };
 
+function getKeyString(x, y) {
+    return `${x}x${y}`;
+}
+
 function createName() {
     const prefix = [
         "COOL",
@@ -45,6 +49,24 @@ function createName() {
     return `${randomArray(prefix)} ${randomArray(animal)}`;
 };
 
+//Get Map Data
+let stages = {};
+let map = "lobby";
+const mapRef = firebase.database().ref(`stages/${map}`);
+mapRef.on("value", (snapshot) => {
+    stages = snapshot.val() || {};
+})
+
+//Barrier Collision Block
+function isSolid(x, y) {
+    const blockedNextSpace = stages.blockedSpaces[getKeyString(x, y)];
+    return (blockedNextSpace ||
+        x >= stages.maxX ||
+        x < stages.minX ||
+        y >= stages.maxY ||
+        y < stages.minY);
+}
+
 (function () {
 
     let playerId;
@@ -59,7 +81,8 @@ function createName() {
         const newY = players[playerId].y + yChange;
 
         //Collision
-        if (true) {
+        //console.log(isSolid(newX, newY));
+        if (!(isSolid(newX, newY))) {
             //move to the next space
             players[playerId].x = newX;
             players[playerId].y = newY;
@@ -93,15 +116,19 @@ function createName() {
                 // Now update the DOM
                 el.querySelector(".Character_name").innerText = characterState.name;
                 el.querySelector(".Character_body").style.backgroundColor = characterState.color;
-                if(characterState.color === "rainbow") {
-                    el.querySelector(".Character_body").classList.add(characterState.color);
+                if (characterState.color === "rainbow") {
+                    el.querySelector(".Character").classList.add(characterState.color);
+                };
+                if (characterState.online === true) {
+                    el.style.overflow = "visible";
+                } else {
+                    el.style.overflow = "hidden";
                 };
                 el.setAttribute("data-color", characterState.color);
                 el.setAttribute("data-direction", characterState.direction);
                 const left = 32 * characterState.x + "px";
                 const top = 32 * characterState.y - 4 + "px";
                 el.style.transform = `translate3d(${left}, ${top}, 0)`;
-
             })
         })
 
@@ -154,8 +181,8 @@ function createName() {
 
             const name = createName();
 
-            firebase.database().ref(`players/${playerId}`).once('value', function(ss) {
-                if( ss.val() === null ) {
+            firebase.database().ref(`players/${playerId}`).once('value', function (ss) {
+                if (ss.val() === null) {
                     //console.log(playerId," does not exist");
                     //If uid does not exists, then create a new entity
                     playerRef.set({
@@ -175,8 +202,9 @@ function createName() {
                     playerRef.update({
                         online: true
                     })
+
                 }
-            
+
             });
 
             //If player disconnects then update online status
