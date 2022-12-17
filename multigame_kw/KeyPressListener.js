@@ -15,7 +15,7 @@ class KeyPressListener {
                             clearInterval(moveInterval);
                             keySafe = true;
                         }
-                    }, 100);
+                    }, 300);
                 }
             }
         };

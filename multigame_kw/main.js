@@ -57,6 +57,7 @@ function createName() {
     function handleArrowPress(xChange = 0, yChange = 0) {
         const newX = players[playerId].x + xChange;
         const newY = players[playerId].y + yChange;
+
         //Collision
         if (true) {
             //move to the next space
@@ -89,10 +90,14 @@ function createName() {
                 let el = playerElements[key];
                 // Now update the DOM
                 el.querySelector(".Character_name").innerText = characterState.name;
+                el.querySelector(".Character_body").style.backgroundColor = characterState.color;
+                if(characterState.color === "rainbow") {
+                    el.querySelector(".Character_body").classList.add(characterState.color);
+                };
                 el.setAttribute("data-color", characterState.color);
                 el.setAttribute("data-direction", characterState.direction);
-                const left = 16 * characterState.x + "px";
-                const top = 16 * characterState.y - 4 + "px";
+                const left = 32 * characterState.x + "px";
+                const top = 32 * characterState.y - 4 + "px";
                 el.style.transform = `translate3d(${left}, ${top}, 0)`;
 
             })
@@ -122,8 +127,8 @@ function createName() {
             characterElement.querySelector(".Character_body").style.backgroundColor = addedPlayer.color;
             characterElement.setAttribute("data-color", addedPlayer.color);
             characterElement.setAttribute("data-direction", addedPlayer.direction);
-            const left = 16 * addedPlayer.x + "px";
-            const top = 16 * addedPlayer.y - 4 + "px";
+            const left = 32 * addedPlayer.x + "px";
+            const top = 32 * addedPlayer.y - 4 + "px";
             characterElement.style.transform = `translate3d(${left}, ${top}, 0)`;
             gameContainer.appendChild(characterElement);
 
