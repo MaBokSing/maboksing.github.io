@@ -1,0 +1,36 @@
+<html>
+
+<head>
+    <title>MultiGame KW</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css" type="text/css">
+</head>
+
+<body style="overflow: hidden; background-color: rgb(167, 255, 255);">
+
+    <div class="game-container">
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxtcBzFceB3mum36fxm-z0ty-O6YCzB1s",
+            authDomain: "multigame-kw.firebaseapp.com",
+            databaseURL: "https://multigame-kw-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "multigame-kw",
+            storageBucket: "multigame-kw.appspot.com",
+            messagingSenderId: "117890193610",
+            appId: "1:117890193610:web:b28f25202a667e84163c33",
+            measurementId: "G-C1BWZR5YNV"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script src="KeyPressListener.js"></script>
+    <script src="main.js"></script>
+    
+</body>
+
+</html>

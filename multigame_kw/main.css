@@ -1,0 +1,102 @@
+/* Characters */
+.grid-cell {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+}
+
+.alignCenter {
+    transform: translateX(-50%);
+}
+
+.Character {
+    transition: transform 0.4s;
+}
+
+.Character.you {
+    z-index: 1;
+}
+
+.Character.you .Character_you-arrow {
+    display: block;
+}
+
+.Character_you-arrow {
+    display: none;
+    position: absolute;
+    top: -55px;
+    /* width: 7px;
+    height: 5px; */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 20px solid #f00;
+    animation-name: arrow;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes arrow {
+    0% {
+        top: -50px;
+    }
+
+    50% {
+        top: -55px;
+    }
+
+    100% {
+        top: -50px;
+    }
+}
+
+.Character_body {
+    overflow: hidden;
+    background-color: black;
+    height: 30px;
+    width: 30px;
+}
+
+.Character_eyes {
+    overflow: hidden;
+    background-color: white;
+    height: 5px;
+    width: 5px;
+    top: 10px;
+    left: -7px;
+    animation-name: eyes;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes eyes {
+    40% {
+        background-color: white;
+    }
+
+    50% {
+        background-color: black;
+    }
+
+    60% {
+        background-color: white;
+    }
+}
+
+.Character_name-container {
+    position: absolute;
+    top: -25px;
+    font-size: 15px;
+    padding: 1px 2px 1px;
+    border-radius: 3px;
+    background: gray;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.Character[data-direction="right"] .Character_eyes {
+    left: 7px;
+}
