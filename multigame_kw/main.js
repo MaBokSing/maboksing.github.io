@@ -94,7 +94,7 @@ function textureMap(xMin, xMax, yMin, yMax) {
                 //console.log(xNavi, yNavi, isSolid(xNavi, yNavi));
                 if (!(document.getElementById(`${xNavi}x${yNavi}`))) {
                     document.querySelector(".game-map").innerHTML += `
-                    <div id="${xNavi}x${yNavi}" class="barrier" style="transform: translate3d(${32 * xNavi + "px"}, ${32 * yNavi - 4 + "px"}, 0) translate(-50%, -50%)"></div>
+                    <div id="${xNavi}x${yNavi}" class="barrier" style="transform: translate3d(${32 * xNavi + "px"}, ${32 * yNavi + "px"}, 0) translate(-50%, -50%)"></div>
                     `;
                 }
             }
@@ -127,7 +127,7 @@ function textureMap(xMin, xMax, yMin, yMax) {
         //Collision
         //console.log(isSolid(newX, newY));
         if (!(isSolid(newX, newY))) {
-            gameCamera.style.transform = `translate(-50%, -50%) translate3d(${newX * 32 * (-(newX - 1) / newX) + "px"}, ${newY * 32 * (-(newY - 1) / newY) - 4 + "px"}, 0)`;
+            gameCamera.style.transform = `translate(-50%, -50%) translate3d(${newX * 32 * (-(newX - 1) / newX) + "px"}, ${newY * 32 * (-(newY - 1) / newY) - 16 + "px"}, 0)`;
             //move to the next space
             players[playerId].x = newX;
             players[playerId].y = newY;
@@ -180,7 +180,7 @@ function textureMap(xMin, xMax, yMin, yMax) {
                 el.setAttribute("data-color", characterState.color);
                 el.setAttribute("data-direction", characterState.direction);
                 const left = 32 * characterState.x + "px";
-                const top = 32 * characterState.y - 4 + "px";
+                const top = 32 * characterState.y + "px";
                 el.style.transform = `translate3d(${left}, ${top}, 0)`;
             })
         })
@@ -210,7 +210,7 @@ function textureMap(xMin, xMax, yMin, yMax) {
             characterElement.setAttribute("data-color", addedPlayer.color);
             characterElement.setAttribute("data-direction", addedPlayer.direction);
             const left = 32 * addedPlayer.x + "px";
-            const top = 32 * addedPlayer.y - 4 + "px";
+            const top = 32 * addedPlayer.y + "px";
             characterElement.style.transform = `translate3d(${left}, ${top}, 0)`;
             gameCamera.appendChild(characterElement);
 
