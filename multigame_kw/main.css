@@ -1,12 +1,16 @@
 /* Characters */
 .game-container {
+    width: 32px;
+    height: 32px;
     position: absolute;
-    /* height: 704px;
-    width: 1024px; */
     top: 50%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+}
+
+.camera {
+    transition: transform 0.6s;
 }
 
 .grid-cell {
@@ -42,9 +46,7 @@
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-top: 20px solid #f00;
-    animation-name: arrow;
-    animation-duration: 1.5s;
-    animation-iteration-count: infinite;
+    animation: arrow 1.5s linear infinite;
 }
 
 @keyframes arrow {

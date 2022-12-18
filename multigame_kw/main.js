@@ -1,3 +1,6 @@
+//Disable mouse
+document.body.style.cursor = 'none';
+
 const playerColors = ["blue", "red", "orange", "yellow", "green", "purple"];
 
 function randomArray(array) {
@@ -61,9 +64,10 @@ mapRef.on("value", (snapshot) => {
     document.querySelector(".game-map").innerHTML = "";
 
     // Assign Map border and others
-    textureMap(stages.minX-1, stages.maxX, stages.minY-1, stages.maxY);
-    document.querySelector(".game-container").style.width = stages.maxX * 32 + "px";
-    document.querySelector(".game-container").style.height = stages.maxY * 32 + "px";
+    textureMap(stages.minX - 1, stages.maxX, stages.minY - 1, stages.maxY);
+    document.querySelector(".camera").style.transform = `translate(-50%, -50%) translate3d(${((stages.minX + 1) - stages.maxX) * 16}px, ${((stages.minY) - stages.maxY) * 16}px, 0px)`;
+    // document.querySelector(".game-container").style.width = stages.maxX * 32 + "px";
+    // document.querySelector(".game-container").style.height = stages.maxY * 32 + "px";
 });
 
 //Barrier Collision Block
@@ -106,16 +110,24 @@ function textureMap(xMin, xMax, yMin, yMax) {
     let players = {};
     let playerElements = {};
 
-    const gameContainer = document.querySelector(".game-container");
+    //const gameContainer = document.querySelector(".game-container");
+    const gameCamera = document.querySelector(".camera");
+
+    //Default Camera at Center H&V
+    //gameCamera.style.transform = `translate(-50%, -50%) translate3d(${(stages.maxX - stages.minX) / 2}px, ${(stages.maxY - stages.minY) / 2}px, 0px)`;
 
     //Detect and execute movement
     function handleArrowPress(xChange = 0, yChange = 0) {
         const newX = players[playerId].x + xChange;
         const newY = players[playerId].y + yChange;
+        // const left = 32 * players[playerId].x + "px";
+        // const top = 32 * players[playerId].y - 4 + "px";
+
 
         //Collision
         //console.log(isSolid(newX, newY));
         if (!(isSolid(newX, newY))) {
+            gameCamera.style.transform = `translate(-50%, -50%) translate3d(${newX * 32 * (-(newX - 1) / newX) + "px"}, ${newY * 32 * (-(newY - 1) / newY) - 4 + "px"}, 0)`;
             //move to the next space
             players[playerId].x = newX;
             players[playerId].y = newY;
@@ -155,7 +167,10 @@ function textureMap(xMin, xMax, yMin, yMax) {
                 el.querySelector(".Character_name").innerText = characterState.name;
                 el.querySelector(".Character_body").style.backgroundColor = characterState.color;
                 if (characterState.color === "rainbow") {
-                    el.querySelector(".Character").classList.add(characterState.color);
+                    //console.log(el.querySelector(".Character_body"));
+                    el.querySelector(".Character_body").classList.add("rainbow");
+                } else {
+                    el.querySelector(".Character_body").classList.remove("rainbow");
                 };
                 if (characterState.online === true) {
                     el.style.overflow = "visible";
@@ -197,14 +212,14 @@ function textureMap(xMin, xMax, yMin, yMax) {
             const left = 32 * addedPlayer.x + "px";
             const top = 32 * addedPlayer.y - 4 + "px";
             characterElement.style.transform = `translate3d(${left}, ${top}, 0)`;
-            gameContainer.appendChild(characterElement);
+            gameCamera.appendChild(characterElement);
 
         })
 
         //Remove character DOM element after they leave
         allPlayersRef.on("child_removed", (snapshot) => {
             const removedKey = snapshot.val().id;
-            gameContainer.removeChild(playerElements[removedKey]);
+            gameCamera.removeChild(playerElements[removedKey]);
             delete playerElements[removedKey];
         })
 
