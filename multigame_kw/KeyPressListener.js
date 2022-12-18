@@ -1,5 +1,5 @@
 class KeyPressListener {
-    constructor(keyCode1, keyCode2, callback) {
+    constructor(callback, keyCode1, keyCode2 = null) {
         let moveInterval;
         let keySafe = true;
 

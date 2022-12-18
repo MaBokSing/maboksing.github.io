@@ -1,4 +1,14 @@
 /* Characters */
+.game-container {
+    position: absolute;
+    /* height: 704px;
+    width: 1024px; */
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
 .grid-cell {
     position: absolute;
     width: 16px;
@@ -6,7 +16,7 @@
 }
 
 .alignCenter {
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
 }
 
 .Character {
@@ -63,14 +73,14 @@
     background-color: white;
     height: 5px;
     width: 5px;
-    top: 10px;
+    top: -4px;
     left: -7px;
-    animation-name: eyes;
-    animation-duration: 5s;
-    animation-iteration-count: infinite;
+    animation:
+        eyes_blink 5s linear infinite,
+        eyes_move 10s linear infinite;
 }
 
-@keyframes eyes {
+@keyframes eyes_blink {
     40% {
         opacity: 100%;
     }
@@ -84,9 +94,23 @@
     }
 }
 
+@keyframes eyes_move {
+    45% {
+        top: -4px;
+    }
+
+    50% {
+        top: -2px;
+    }
+
+    55% {
+        top: -4px;
+    }
+}
+
 .Character_name-container {
     position: absolute;
-    top: -25px;
+    top: -30px;
     font-size: 15px;
     padding: 1px 2px 1px;
     border-radius: 3px;
