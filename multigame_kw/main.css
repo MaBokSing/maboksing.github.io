@@ -28,6 +28,7 @@
 }
 
 .Character.you {
+    position: relative;
     z-index: 1;
 }
 
