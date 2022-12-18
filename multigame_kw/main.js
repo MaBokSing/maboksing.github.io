@@ -131,12 +131,6 @@ function textureMap(xMin, xMax, yMin, yMax) {
             //move to the next space
             players[playerId].x = newX;
             players[playerId].y = newY;
-            if (xChange === 1) {
-                players[playerId].direction = "right";
-            }
-            if (xChange === -1) {
-                players[playerId].direction = "left";
-            }
             playerRef.set(players[playerId]);
         }
     }
@@ -147,8 +141,8 @@ function textureMap(xMin, xMax, yMin, yMax) {
         //Key Press
         new KeyPressListener(() => handleArrowPress(0, -1), "ArrowUp", "KeyW");
         new KeyPressListener(() => handleArrowPress(0, 1), "ArrowDown", "KeyS");
-        new KeyPressListener(() => handleArrowPress(-1, 0), "ArrowLeft", "KeyA");
-        new KeyPressListener(() => handleArrowPress(1, 0), "ArrowRight", "KeyD");
+        new KeyPressListener(() => {handleArrowPress(-1, 0); players[playerId].direction = "left"; playerRef.set(players[playerId]);}, "ArrowLeft", "KeyA");
+        new KeyPressListener(() => {handleArrowPress(1, 0); players[playerId].direction = "right"; playerRef.set(players[playerId]);}, "ArrowRight", "KeyD");
         //new KeyPressListener(() => handleArrowPress(1, 0), "KeyE");
 
         //Map Data
