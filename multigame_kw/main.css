@@ -135,3 +135,11 @@
         background-position: 0% 50%
     }
 }
+
+.barrier {
+    position: absolute;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.2);
+    height: 32px;
+    width: 32px;
+}

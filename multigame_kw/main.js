@@ -55,16 +55,47 @@ let map = "lobby";
 const mapRef = firebase.database().ref(`stages/${map}`);
 mapRef.on("value", (snapshot) => {
     stages = snapshot.val() || {};
-})
+    document.querySelector(".game-map").innerHTML = "";
+    textureMap();
+});
 
 //Barrier Collision Block
 function isSolid(x, y) {
     const blockedNextSpace = stages.blockedSpaces[getKeyString(x, y)];
+    // console.log(x, y, (blockedNextSpace ||
+    //     x >= stages.maxX ||
+    //     x < stages.minX ||
+    //     y >= stages.maxY ||
+    //     y < stages.minY));
     return (blockedNextSpace ||
         x >= stages.maxX ||
         x < stages.minX ||
         y >= stages.maxY ||
         y < stages.minY);
+}
+
+//Put texture on barrier(mapping)
+function textureMap() {
+
+    //Maximum of the screen
+    let xMax = 32; //59
+    let yMax = 22; //29
+    let xMin = 1;
+    let yMin = 1;
+
+    for (let yNavi = yMin; yNavi <= yMax; yNavi++) {
+        for (let xNavi = xMin; xNavi <= xMax; xNavi++) {
+            if (isSolid(xNavi, yNavi)) {
+                //console.log(xNavi, yNavi, isSolid(xNavi, yNavi));
+                if (!(document.getElementById(`${xNavi}x${yNavi}`))) {
+                    document.querySelector(".game-map").innerHTML += `
+                    <div id="${xNavi}x${yNavi}" class="barrier" style="transform: translate3d(${32 * xNavi + "px"}, ${32 * yNavi - 4 + "px"}, 0) translateX(-50%)"></div>
+                    `;
+                }
+            }
+        }
+    }
+
 }
 
 (function () {
@@ -76,6 +107,7 @@ function isSolid(x, y) {
 
     const gameContainer = document.querySelector(".game-container");
 
+    //Detect and execute movement
     function handleArrowPress(xChange = 0, yChange = 0) {
         const newX = players[playerId].x + xChange;
         const newY = players[playerId].y + yChange;
@@ -98,11 +130,15 @@ function isSolid(x, y) {
 
     function initGame() {
 
+        //setTimeout(() => textureMap(), 1000);
         //Key Press
         new KeyPressListener("ArrowUp", "KeyW", () => handleArrowPress(0, -1));
         new KeyPressListener("ArrowDown", "KeyS", () => handleArrowPress(0, 1));
         new KeyPressListener("ArrowLeft", "KeyA", () => handleArrowPress(-1, 0));
         new KeyPressListener("ArrowRight", "KeyD", () => handleArrowPress(1, 0));
+
+        //Map Data
+        const allMapRef = firebase.database().ref(`stages/lobby/blockedSpaces`);
 
         //Player Data
         const allPlayersRef = firebase.database().ref(`players`);
