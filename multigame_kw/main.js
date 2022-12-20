@@ -113,36 +113,44 @@ function textureMap(xMin, xMax, yMin, yMax) {
     //const gameContainer = document.querySelector(".game-container");
     const gameCamera = document.querySelector(".camera");
 
-    //Default Camera at Center H&V
-    //gameCamera.style.transform = `translate(-50%, -50%) translate3d(${(stages.maxX - stages.minX) / 2}px, ${(stages.maxY - stages.minY) / 2}px, 0px)`;
-
     //Detect and execute movement
     function handleArrowPress(xChange = 0, yChange = 0) {
         const newX = players[playerId].x + xChange;
         const newY = players[playerId].y + yChange;
-        // const left = 32 * players[playerId].x + "px";
-        // const top = 32 * players[playerId].y - 4 + "px";
-
 
         //Collision
         //console.log(isSolid(newX, newY));
         if (!(isSolid(newX, newY))) {
             gameCamera.style.transform = `translate(-50%, -50%) translate3d(${newX * 32 * (-(newX - 1) / newX) + "px"}, ${newY * 32 * (-(newY - 1) / newY) - 16 + "px"}, 0)`;
-            //move to the next space
-            players[playerId].x = newX;
-            players[playerId].y = newY;
-            playerRef.set(players[playerId]);
+            // players[playerId].x = newX;
+            // players[playerId].y = newY;
+            // playerRef.set(players[playerId]);
+            playerRef.update({
+                x: newX,
+                y: newY,
+                walking: true
+            })
         }
     }
+
+    function stopWalking() {
+        playerRef.update({
+            walking: false
+        })
+    }
+
+    //When Mouse leaves page
+    document.documentElement.onmouseleave = function () { stopWalking(); };
 
     function initGame() {
 
         //setTimeout(() => textureMap(), 1000);
         //Key Press
-        new KeyPressListener(() => handleArrowPress(0, -1), "ArrowUp", "KeyW");
-        new KeyPressListener(() => handleArrowPress(0, 1), "ArrowDown", "KeyS");
-        new KeyPressListener(() => {handleArrowPress(-1, 0); players[playerId].direction = "left"; playerRef.set(players[playerId]);}, "ArrowLeft", "KeyA");
-        new KeyPressListener(() => {handleArrowPress(1, 0); players[playerId].direction = "right"; playerRef.set(players[playerId]);}, "ArrowRight", "KeyD");
+        // KeyPressListener(KeyDownFunc, KeyUpFunc, Key1, Key2)
+        new KeyPressListener(() => handleArrowPress(0, -1), () => stopWalking(), "ArrowUp", "KeyW");
+        new KeyPressListener(() => handleArrowPress(0, 1), () => stopWalking(), "ArrowDown", "KeyS");
+        new KeyPressListener(() => { handleArrowPress(-1, 0); players[playerId].direction = "left"; playerRef.set(players[playerId]); }, () => stopWalking(), "ArrowLeft", "KeyA");
+        new KeyPressListener(() => { handleArrowPress(1, 0); players[playerId].direction = "right"; playerRef.set(players[playerId]); }, () => stopWalking(), "ArrowRight", "KeyD");
         //new KeyPressListener(() => handleArrowPress(1, 0), "KeyE");
 
         //Map Data
@@ -176,6 +184,32 @@ function textureMap(xMin, xMax, yMin, yMax) {
                 const left = 32 * characterState.x + "px";
                 const top = 32 * characterState.y + "px";
                 el.style.transform = `translate3d(${left}, ${top}, 0)`;
+
+                if (characterState.walking === true) {
+                    //Walking effect
+                    let entity = Math.random().toString(36).substr(2, 10);
+                    const life = 200;
+
+                    setTimeout(function () {
+                        document.querySelector(".game-map").innerHTML += `
+                        <div class="walkingEffect" data-owner="${playerId}" data-entity="${entity}" data-life="${life}" style="opacity: 0.2; transform: translate3d(${left}, ${top}, 0) translate(-50%, -50%)"></div>
+                    `;
+                        var lifeTimer = setInterval(function () {
+                            document.querySelector(`[data-entity="${entity}"]`).setAttribute("data-life", document.querySelector(`[data-entity="${entity}"]`).getAttribute("data-life") - 1);
+                            document.querySelector(`[data-entity="${entity}"]`).style.opacity = document.querySelector(`[data-entity="${entity}"]`).style.opacity - (document.querySelector(`[data-entity="${entity}"]`).style.opacity * (1 / life));
+
+                            if (document.querySelector(`[data-entity="${entity}"]`).getAttribute("data-life") <= 0) {
+                                document.querySelector(`[data-entity="${entity}"]`).remove();
+                                clearInterval(lifeTimer);
+                            }
+                        }, 1);
+                    }, 280)
+
+                    //Play walking sound
+                    var walk = new Audio('sound/walk.wav');
+                    walk.volume = 0.1;
+                    walk.play();
+                }
             })
         })
 
@@ -240,6 +274,7 @@ function textureMap(xMin, xMax, yMin, yMax) {
                         x: 3,
                         y: 3,
                         stage: "lobby",
+                        walking: false,
                         online: true
                     })
                 }

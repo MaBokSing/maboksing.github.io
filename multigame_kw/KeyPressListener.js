@@ -1,5 +1,5 @@
 class KeyPressListener {
-    constructor(callback, keyCode1, keyCode2 = null) {
+    constructor(callback1, callback2, keyCode1, keyCode2 = null) {
         let moveInterval;
         let keySafe = true;
 
@@ -7,9 +7,9 @@ class KeyPressListener {
             if (event.code === keyCode1 || event.code === keyCode2) {
                 if (keySafe) {
                     keySafe = false;
-                    callback();
+                    callback1();
                     moveInterval = setInterval(function () {
-                        callback();
+                        callback1();
                         //Loss focus on page
                         if (!document.hasFocus()) {
                             clearInterval(moveInterval);
@@ -24,6 +24,7 @@ class KeyPressListener {
             if (event.code === keyCode1 || event.code === keyCode2) {
                 clearInterval(moveInterval);
                 keySafe = true;
+                callback2();
             }
         };
         document.addEventListener("keydown", this.keydownFunction);
