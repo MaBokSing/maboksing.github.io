@@ -57,6 +57,7 @@ let stages = {};
 
 //Map Current In
 let map = "lobby";
+let mapDefaultCam = true;
 
 const mapRef = firebase.database().ref(`stages/${map}`);
 mapRef.on("value", (snapshot) => {
@@ -65,7 +66,10 @@ mapRef.on("value", (snapshot) => {
 
     // Assign Map border and others
     textureMap(stages.minX - 1, stages.maxX, stages.minY - 1, stages.maxY);
-    document.querySelector(".camera").style.transform = `translate(-50%, -50%) translate3d(${((stages.minX + 1) - stages.maxX) * 16}px, ${((stages.minY) - stages.maxY) * 16}px, 0px)`;
+    if (mapDefaultCam) {
+        document.querySelector(".camera").style.transform = `translate(-50%, -50%) translate3d(${((stages.minX + 1) - stages.maxX) * 16}px, ${((stages.minY) - stages.maxY) * 16}px, 0px)`;
+        mapDefaultCam = false;
+    }
     // document.querySelector(".game-container").style.width = stages.maxX * 32 + "px";
     // document.querySelector(".game-container").style.height = stages.maxY * 32 + "px";
 });
@@ -121,15 +125,24 @@ function textureMap(xMin, xMax, yMin, yMax) {
         //Collision
         //console.log(isSolid(newX, newY));
         if (!(isSolid(newX, newY))) {
+            //Following Camera
             gameCamera.style.transform = `translate(-50%, -50%) translate3d(${newX * 32 * (-(newX - 1) / newX) + "px"}, ${newY * 32 * (-(newY - 1) / newY) - 16 + "px"}, 0)`;
-            // players[playerId].x = newX;
-            // players[playerId].y = newY;
-            // playerRef.set(players[playerId]);
+
+            //Change player position
             playerRef.update({
                 x: newX,
                 y: newY,
+                tempX: players[playerId].x,
+                tempY: players[playerId].y,
                 walking: true
-            })
+            });
+
+            // setTimeout(
+            //     playerRef.update({
+            //         tempX: newX,
+            //         tempY: newY
+            //     })
+            //     , 300);
         }
     }
 
@@ -169,7 +182,6 @@ function textureMap(xMin, xMax, yMin, yMax) {
                 el.querySelector(".Character_name").innerText = characterState.name;
                 el.querySelector(".Character_body").style.backgroundColor = characterState.color;
                 if (characterState.color === "rainbow") {
-                    //console.log(el.querySelector(".Character_body"));
                     el.querySelector(".Character_body").classList.add("rainbow");
                 } else {
                     el.querySelector(".Character_body").classList.remove("rainbow");
@@ -186,30 +198,38 @@ function textureMap(xMin, xMax, yMin, yMax) {
                 el.style.transform = `translate3d(${left}, ${top}, 0)`;
 
                 if (characterState.walking === true) {
+                    const tempLeft = 32 * characterState.tempX + "px";
+                    const tempTop = 32 * characterState.tempY + "px";
+
                     //Walking effect
                     let entity = Math.random().toString(36).substr(2, 10);
                     const life = 200;
 
-                    setTimeout(function () {
-                        document.querySelector(".game-map").innerHTML += `
-                        <div class="walkingEffect" data-owner="${playerId}" data-entity="${entity}" data-life="${life}" style="opacity: 0.2; transform: translate3d(${left}, ${top}, 0) translate(-50%, -50%)"></div>
+                    document.querySelector(".game-map").innerHTML += `
+                        <div class="walkingEffect" data-owner="${playerId}" data-entity="${entity}" data-life="${life}" style="opacity: 0.2; transform: translate3d(${tempLeft}, ${tempTop}, 0) translate(-50%, -50%)"></div>
                     `;
-                        var lifeTimer = setInterval(function () {
-                            document.querySelector(`[data-entity="${entity}"]`).setAttribute("data-life", document.querySelector(`[data-entity="${entity}"]`).getAttribute("data-life") - 1);
-                            document.querySelector(`[data-entity="${entity}"]`).style.opacity = document.querySelector(`[data-entity="${entity}"]`).style.opacity - (document.querySelector(`[data-entity="${entity}"]`).style.opacity * (1 / life));
 
-                            if (document.querySelector(`[data-entity="${entity}"]`).getAttribute("data-life") <= 0) {
-                                document.querySelector(`[data-entity="${entity}"]`).remove();
-                                clearInterval(lifeTimer);
-                            }
-                        }, 1);
-                    }, 280)
+                    //document.querySelector(`[data-entity="${entity}"]`).style.transform = `translate3d(${left}, ${top}, 0) translate(-50%, -50%)`;
+
+                    //Count down disappear
+                    var lifeTimer = setInterval(function () {
+                        document.querySelector(`[data-entity="${entity}"]`).setAttribute("data-life", document.querySelector(`[data-entity="${entity}"]`).getAttribute("data-life") - 1);
+                        document.querySelector(`[data-entity="${entity}"]`).style.opacity = document.querySelector(`[data-entity="${entity}"]`).style.opacity - (document.querySelector(`[data-entity="${entity}"]`).style.opacity * (1 / life));
+
+                        if (document.querySelector(`[data-entity="${entity}"]`).getAttribute("data-life") <= 0) {
+                            document.querySelector(`[data-entity="${entity}"]`).remove();
+                            clearInterval(lifeTimer);
+                        }
+                    }, 1);
+
 
                     //Play walking sound
                     var walk = new Audio('sound/walk.wav');
                     walk.volume = 0.1;
                     walk.play();
                 }
+
+
             })
         })
 
@@ -273,6 +293,8 @@ function textureMap(xMin, xMax, yMin, yMax) {
                         color: randomArray(playerColors),
                         x: 3,
                         y: 3,
+                        tempX: 3,
+                        tempY: 3,
                         stage: "lobby",
                         walking: false,
                         online: true

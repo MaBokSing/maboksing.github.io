@@ -23,8 +23,8 @@ class KeyPressListener {
         this.keyupFunction = function (event) {
             if (event.code === keyCode1 || event.code === keyCode2) {
                 clearInterval(moveInterval);
-                keySafe = true;
                 callback2();
+                keySafe = true;
             }
         };
         document.addEventListener("keydown", this.keydownFunction);
