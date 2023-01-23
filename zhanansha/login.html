@@ -6,9 +6,10 @@
 
 <body>
 
+    <div id="menu">
+    </div>
     <div id="formArea">
     </div>
-    <button id="logout">Log out</button>
 
 </body>
 
@@ -172,8 +173,24 @@
                     })
                         .then(() => {
                             // Data saved successfully!
-                            alert('user logged in successfully ' + email + ' ' + user.uid);
+                            alert('User ' + email + ' logged in successfully');
+                            if (user) {
+                                //User is signed in
+                                update(ref(database, 'users/' + user.uid), {
+                                    online: true
+                                })
 
+                                //Create logout button and its function
+                                document.getElementById("menu").innerHTML += `
+                                    <div id="loginStatus" style="position: absolute; top: 15px; right: 20px;">
+                                        <label id="account"></label>
+                                        <button id="logOut">Log out</button>
+                                    </div>
+                                `
+                                document.getElementById("account").innerHTML = email;
+                                document.getElementById("logOut").addEventListener("click", logOut, false);
+
+                            }
                         })
                         .catch((error) => {
                             // The write failed...
@@ -189,30 +206,43 @@
 
     };
 
-    const user = auth.currentUser;
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            //User is signed in
-            update(ref(database, 'users/' + user.uid), {
-                online: true
-            })
-            // } else {
-            //     //User is signed out
-            //     update(ref(database, 'users/' + user.uid), {
-            //         online: false
-            //     })
-        }
-    });
+    // const user = auth.currentUser;
+    // onAuthStateChanged(auth, (user) => {
+    //     if (user) {
+    //         //User is signed in
+    //         update(ref(database, 'users/' + user.uid), {
+    //             online: true
+    //         })
+
+    //         //Create logout button and its function
+    //         document.getElementById("menu").innerHTML += `
+    //             <div id="loginStatus" style="position: absolute; top: 15px; right: 20px;">
+    //                 <label id="account"></label>
+    //                 <button id="logOut">Log out</button>
+    //             </div>
+    //         `
+    //         document.getElementById("account").innerHTML = document.getElementById('email').value;
+    //         document.getElementById("logOut").addEventListener("click", logOut, false);
+
+    //         // } else {
+    //         //     //User is signed out
+    //         //     update(ref(database, 'users/' + user.uid), {
+    //         //         online: false
+    //         //     })
+    //     }
+    // });
 
     function logOut() {
         const user = auth.currentUser;
         update(ref(database, 'users/' + user.uid), {
             online: false
         })
+        document.getElementById('loginStatus').remove();
+
         signOut(auth)
             .then(() => {
                 //Signout successfully
-                alert(user.uid + 'User signed out.');
+                alert('User ' + document.getElementById('email').value + ' signed out.');
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -221,10 +251,6 @@
             });
     }
 
-    //When user logged out
-    document.getElementById('logout').addEventListener('click', (e) => {
-        logOut();
-    });
     //When user refreshed or closed the page
     window.onbeforeunload = function () {
         logOut();
