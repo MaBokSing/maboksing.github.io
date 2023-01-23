@@ -2,7 +2,6 @@
 
 <head>
     <title>ZhananSha</title>
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 </head>
 
 <body>
@@ -105,6 +104,7 @@
 
     //Fetch client ip address
     async function getIp() {
+        //return (await (await fetch('https://api.ipify.org/?format=json')).json()).ip;
         return (await (await fetch('http://ip-api.com/json/?fields=61439')).json()).query;
     }
     var ip_address = await getIp();
