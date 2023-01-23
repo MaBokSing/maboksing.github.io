@@ -137,7 +137,8 @@
                             .then(() => {
                                 // Data saved successfully!
                                 alert('user created successfully');
-
+                                formType = 'loginForm';
+                                formSwitch();
                             })
                             .catch((error) => {
                                 // The write failed...
