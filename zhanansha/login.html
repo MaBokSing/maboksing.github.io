@@ -105,7 +105,9 @@
     //Fetch client ip address
     async function getIp() {
         //return (await (await fetch('https://api.ipify.org/?format=json')).json()).ip;
-        return (await (await fetch('http://ip-api.com/json/?fields=61439')).json()).query;
+        return (await (await fetch('https://ipinfo.io/json')).json()).ip;
+        //return (await (await fetch('http://ip-api.com/json/?fields=61439')).json()).query;
+        //return (await (await fetch('https://ipinfo.io')).json()).ip;
     }
     var ip_address = await getIp();
 
