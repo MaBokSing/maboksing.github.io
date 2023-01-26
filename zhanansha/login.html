@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <head>
-    <title>ZhananSha</title>
+    <title>渣男杀</title>
 </head>
 
 <body>
@@ -83,8 +83,8 @@
 
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
-    import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+    import { getDatabase, set, ref, update, get } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -114,6 +114,8 @@
     var ip_address = await getIp();
 
     //When Submit Button pressed
+    var syncLog; //for sync log time setInterval
+
     function submitForm() {
 
         //Register
@@ -164,23 +166,49 @@
             //Login
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
+                    //Generate a login token
+                    const loginToken = Math.random().toString(36).substr(2);
+
                     // Signed in
                     const user = userCredential.user;
-
                     var lgDate = new Date();
+
+                    //Connection test & One login only 
+                    syncLog = setInterval(function () {
+
+                        if (auth.currentUser) {
+                            update(ref(database, 'users/' + user.uid), {
+                                last_logout: new Date()
+                            });
+                        } else {
+                            clearInterval(syncLog);
+                            alert('Someone is logging in on another device. He has been logged out.');
+                            submitForm();
+                        }
+
+                        get(ref(database, 'users/' + user.uid + '/current_token'))
+                            .then((snapshot) => {
+                                if (snapshot.val() != loginToken) {
+                                    //clearInterval(syncLog);
+                                    logOut();
+                                    console.log(loginToken + ' != ' + snapshot.val());
+                                    alert('Someone is logged in on another device.');
+                                }
+                            });
+                    }, 100);
+
                     update(ref(database, 'users/' + user.uid), {
+                        current_token: loginToken,
                         last_login: lgDate,
                         ip_address: ip_address
                     })
+
                         .then(() => {
                             // Data saved successfully!
                             alert('User ' + email + ' logged in successfully');
+
                             if (user) {
                                 //User is signed in
-                                update(ref(database, 'users/' + user.uid), {
-                                    online: true
-                                })
-
                                 //Create logout button and its function
                                 document.getElementById("menu").innerHTML += `
                                     <div id="loginStatus" style="position: absolute; top: 15px; right: 20px;">
@@ -190,7 +218,6 @@
                                 `
                                 document.getElementById("account").innerHTML = email;
                                 document.getElementById("logOut").addEventListener("click", logOut, false);
-
                             }
                         })
                         .catch((error) => {
@@ -207,38 +234,10 @@
 
     };
 
-    // const user = auth.currentUser;
-    // onAuthStateChanged(auth, (user) => {
-    //     if (user) {
-    //         //User is signed in
-    //         update(ref(database, 'users/' + user.uid), {
-    //             online: true
-    //         })
-
-    //         //Create logout button and its function
-    //         document.getElementById("menu").innerHTML += `
-    //             <div id="loginStatus" style="position: absolute; top: 15px; right: 20px;">
-    //                 <label id="account"></label>
-    //                 <button id="logOut">Log out</button>
-    //             </div>
-    //         `
-    //         document.getElementById("account").innerHTML = document.getElementById('email').value;
-    //         document.getElementById("logOut").addEventListener("click", logOut, false);
-
-    //         // } else {
-    //         //     //User is signed out
-    //         //     update(ref(database, 'users/' + user.uid), {
-    //         //         online: false
-    //         //     })
-    //     }
-    // });
-
     function logOut() {
         const user = auth.currentUser;
-        update(ref(database, 'users/' + user.uid), {
-            online: false
-        })
-        document.getElementById('loginStatus').remove();
+        clearInterval(syncLog); //Stop sync log time setInterval
+        if (document.getElementById('loginStatus')) { document.getElementById('loginStatus').remove(); }
 
         signOut(auth)
             .then(() => {
@@ -254,7 +253,6 @@
 
     //When user refreshed or closed the page
     window.onbeforeunload = function () {
-        logOut();
     }
 
 </script>
