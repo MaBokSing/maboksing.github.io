@@ -241,6 +241,11 @@
                             console.log('User ' + email + ' logged in successfully');
                             alertFunc('User ' + email + ' logged in successfully');
 
+                            //Update login user email display
+                            if (document.getElementById('loginStatus')) {
+                                document.getElementById("account").innerHTML = email;
+                            }
+                            //Prevent multiple user status panel
                             if (user && !document.getElementById('loginStatus')) {
                                 //User is signed in
                                 //Create logout button and its function
