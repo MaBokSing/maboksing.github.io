@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <head>
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <title>渣男杀</title>
 </head>
 
@@ -8,7 +9,7 @@
 
     <div id="menu">
         <div id="version" style="position: absolute; top: 15px; left: 20px;">
-            v1.11
+            v1.12
         </div>
     </div>
     <div id="alert"
@@ -261,7 +262,21 @@
                 .catch((error) => {
                     const errorCode = error.code;
                     const errorMessage = error.message;
-                    console.log(errorMessage);
+                    console.log(errorMessage + ' [' + error.code + ']');
+                    switch (errorCode) {
+                        case 'auth/invalid-email':
+                            alertFunc('Invalid email.');
+                            break;
+                        case 'auth/wrong-password':
+                            alertFunc('Wrong password.');
+                            break;
+                        case 'auth/internal-error':
+                            if (document.getElementById('password').value == '')
+                            alertFunc('Please enter password');
+                            break;
+                        default:
+                            alertFunc('Unknown error.');
+                    }
                 });
         };
 
