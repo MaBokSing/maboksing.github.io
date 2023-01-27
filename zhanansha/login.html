@@ -116,6 +116,9 @@
     //When Submit Button pressed
     var syncLog; //for sync log time setInterval
 
+    //Generate a login token
+    const loginToken = Math.random().toString(36).substr(2);
+
     function submitForm() {
 
         //Register
@@ -138,23 +141,23 @@
                         })
                             .then(() => {
                                 // Data saved successfully!
-                                alert('user created successfully');
+                                console.log('user created successfully');
                                 formType = 'loginForm';
                                 formSwitch();
                             })
                             .catch((error) => {
                                 // The write failed...
-                                alert(error);
+                                console.log(error);
                             });
                     })
                     .catch((error) => {
                         const errorCode = error.code;
                         const errorMessage = error.message;
                         // ..
-                        alert(errorMessage);
+                        console.log(errorMessage);
                     });
             } else {
-                alert("Repeat password wrong.");
+                console.log("Repeat password wrong.");
             };
         };
 
@@ -163,17 +166,16 @@
             var email = document.getElementById('email').value;
             var password = document.getElementById('password').value;
 
+
             //Login
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    //Generate a login token
-                    const loginToken = Math.random().toString(36).substr(2);
-
                     // Signed in
                     const user = userCredential.user;
                     var lgDate = new Date();
 
-                    //Connection test & One login only 
+                    //Connection test & One login only
+                    clearInterval(syncLog);
                     syncLog = setInterval(function () {
 
                         if (auth.currentUser) {
@@ -182,7 +184,8 @@
                             });
                         } else {
                             clearInterval(syncLog);
-                            alert('Someone is logging in on another device. He has been logged out.');
+                            console.log('Someone is logging in on another device. He has been logged out.');
+                            if (document.getElementById('loginStatus')) { document.getElementById('loginStatus').remove(); };
                             submitForm();
                         }
 
@@ -192,7 +195,7 @@
                                     //clearInterval(syncLog);
                                     logOut();
                                     console.log(loginToken + ' != ' + snapshot.val());
-                                    alert('Someone is logged in on another device.');
+                                    console.log('Someone is logged in on another device.');
                                 }
                             });
                     }, 100);
@@ -205,9 +208,9 @@
 
                         .then(() => {
                             // Data saved successfully!
-                            alert('User ' + email + ' logged in successfully');
+                            console.log('User ' + email + ' logged in successfully');
 
-                            if (user) {
+                            if (user && !document.getElementById('loginStatus')) {
                                 //User is signed in
                                 //Create logout button and its function
                                 document.getElementById("menu").innerHTML += `
@@ -222,13 +225,13 @@
                         })
                         .catch((error) => {
                             // The write failed...
-                            alert(error);
+                            console.log(error);
                         });
                 })
                 .catch((error) => {
                     const errorCode = error.code;
                     const errorMessage = error.message;
-                    alert(errorMessage);
+                    console.log(errorMessage);
                 });
         };
 
@@ -242,12 +245,12 @@
         signOut(auth)
             .then(() => {
                 //Signout successfully
-                alert('User ' + user.email + ' signed out.');
+                console.log('User ' + user.email + ' signed out.');
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                alert(errorMessage);
+                console.log(errorMessage);
             });
     }
 
