@@ -8,15 +8,38 @@
 
     <div id="menu">
         <div id="version" style="position: absolute; top: 15px; left: 20px;">
-            v1.00
+            v1.10
         </div>
     </div>
-    <div id="formArea" style="position: absolute; top: 50%; align-self: center; left: 50%; transform: translate(-50%, -81%); text-align: center; line-height: 1.5;">
+    <div id="alert"
+        style="position: absolute; top: 30px; align-self: center; left: 50%; transform: translate(-50%, 0%); text-align: center; padding: 10px; color: white;">
+    </div>
+    <div id="formArea"
+        style="position: absolute; top: 50%; align-self: center; left: 50%; transform: translate(-50%, -81%); text-align: center; line-height: 1.5;">
     </div>
 
 </body>
 
 <script type="module">
+
+    //Alert function
+    var alertTimeout = 0;
+    function alertFunc(text) {
+        document.getElementById('alert').innerHTML = text;
+        document.getElementById('alert').style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+        if (alertTimeout <= 0) {
+            var alertTimeoutInterval = setInterval(() => {
+                alertTimeout -= 1;
+                if (alertTimeout <= 0) {
+                    document.getElementById('alert').innerHTML = '';
+                    document.getElementById('alert').style.backgroundColor = 'rgba(0, 0, 0, 0)';
+                    clearInterval(alertTimeoutInterval);
+                    alertTimeout = 0;
+                }
+            }, 1)
+        }
+        alertTimeout = 600;
+    }
 
     //Default login panel
     var formType = 'loginForm';
@@ -145,6 +168,7 @@
                             .then(() => {
                                 // Data saved successfully!
                                 console.log('user created successfully');
+                                alertFunc('user created successfully');
                                 formType = 'loginForm';
                                 formSwitch();
                             })
@@ -160,7 +184,8 @@
                         console.log(errorMessage);
                     });
             } else {
-                console.log("Repeat password wrong.");
+                console.log('Repeat password wrong.');
+                alertFunc('Repeat password wrong.');
             };
         };
 
@@ -188,6 +213,7 @@
                         } else {
                             clearInterval(syncLog);
                             console.log('Someone is logging in on another device. He has been logged out.');
+                            alertFunc('Someone is logging in on another device. He has been logged out.');
                             if (document.getElementById('loginStatus')) { document.getElementById('loginStatus').remove(); };
                             submitForm();
                         }
@@ -199,6 +225,7 @@
                                     logOut();
                                     console.log(loginToken + ' != ' + snapshot.val());
                                     console.log('Someone is logged in on another device.');
+                                    alertFunc('Someone is logged in on another device.');
                                 }
                             });
                     }, 100);
@@ -212,6 +239,7 @@
                         .then(() => {
                             // Data saved successfully!
                             console.log('User ' + email + ' logged in successfully');
+                            alertFunc('User ' + email + ' logged in successfully');
 
                             if (user && !document.getElementById('loginStatus')) {
                                 //User is signed in
@@ -249,6 +277,7 @@
             .then(() => {
                 //Signout successfully
                 console.log('User ' + user.email + ' signed out.');
+                alertFunc('User ' + user.email + ' signed out.');
             })
             .catch((error) => {
                 const errorCode = error.code;
