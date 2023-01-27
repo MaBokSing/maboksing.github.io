@@ -25,7 +25,7 @@
 
     //Alert function
     var alertTimeout = 0;
-    function alertFunc(text) {
+    function alertFunc(text, timeAdd = 0) {
         document.getElementById('alert').innerHTML = text;
         document.getElementById('alert').style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
         if (alertTimeout <= 0) {
@@ -39,7 +39,7 @@
                 }
             }, 1)
         }
-        alertTimeout = 600;
+        alertTimeout = 600 + timeAdd;
     }
 
     //Default login panel
@@ -261,8 +261,6 @@
                 })
                 .catch((error) => {
                     const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.log(errorMessage + ' [' + error.code + ']');
                     switch (errorCode) {
                         case 'auth/invalid-email':
                             alertFunc('Invalid email.');
@@ -272,7 +270,10 @@
                             break;
                         case 'auth/internal-error':
                             if (document.getElementById('password').value == '')
-                            alertFunc('Please enter password');
+                                alertFunc('Please enter password');
+                            break;
+                        case 'auth/too-many-requests':
+                            alertFunc('Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.', 600);
                             break;
                         default:
                             alertFunc('Unknown error.');
