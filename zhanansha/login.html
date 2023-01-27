@@ -260,8 +260,7 @@
                         });
                 })
                 .catch((error) => {
-                    const errorCode = error.code;
-                    switch (errorCode) {
+                    switch (error.code) {
                         case 'auth/invalid-email':
                             alertFunc('Invalid email.');
                             break;
